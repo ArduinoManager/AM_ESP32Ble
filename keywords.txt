@@ -1,0 +1,56 @@
+###########################################
+# Syntax Coloring Map For AM_ESP32Ble
+###########################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+AM_ESP32Ble	KEYWORD1
+
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+loop	KEYWORD2
+writeMessage	KEYWORD2
+writeTripleMessage	KEYWORD2
+writeTxtMessage	KEYWORD2
+log	KEYWORD2
+logLn	KEYWORD2
+temporaryDigitalWrite	KEYWORD2
+sendFileList	KEYWORD2
+sendFile	KEYWORD2
+sdLogLabels	KEYWORD2
+sdLog	KEYWORD2
+sdSendLogData	KEYWORD2
+sdPurgeLogData	KEYWORD2
+sdFileSize	KEYWORD2
+setNTPServerAddress	KEYWORD2
+dumpAlarms	KEYWORD2
+printTime	KEYWORD2
+now	KEYWORD2
+begin	KEYWORD2
+write	KEYWORD2
+available	KEYWORD2
+read	KEYWORD2
+flush	KEYWORD2
+stop	KEYWORD2
+connected	KEYWORD2
+begin	KEYWORD2
+disconnect	KEYWORD2
+macAddress	KEYWORD2
+encryptionType	KEYWORD2
+setDeviceName	KEYWORD2
+
+#######################################
+# Instances (KEYWORD2)
+#######################################
+AM_ESP32Ble	KEYWORD2
+AMController	KEYWORD2
+amController	KEYWORD2
+
+
+#######################################
+# Constants (LITERAL1)
+#######################################

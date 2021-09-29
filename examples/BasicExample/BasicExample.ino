@@ -6,9 +6,9 @@
 
    Author: Fabrizio Boco - fabboco@gmail.com
 
-   Version: 1.0
+   Version: 1.1
 
-   05/23/2021
+   09/21/2021
 
    All rights reserved
 
@@ -68,7 +68,7 @@ void setup() {
   Serial.println("AMControllerESP32BleExample");
   Serial.println("----------------------------");
 
-  amController.begin();
+  amController.begin("AMManager");
 
 
 #if (defined(SD_SUPPORT))

@@ -84,19 +84,18 @@ AMController::AMController(
 }
 #endif
 
-void AMController::begin() {
+void AMController::begin(const char *deviceName) {
 
   // Initialise the Bluefruit module
 #ifdef DEBUG
-  Serial.println("Initialise the ESP32 module");
+  Serial.println("Initializing BLE Services");
 #endif
 
-  BLEDevice::init("AManager");
+  BLEDevice::init(deviceName);
 
   _pServer = BLEDevice::createServer();
   _pServerCallbacks = new ConnectionCallbacks(this);
   _pServer->setCallbacks(_pServerCallbacks);
-
 
   _pService = _pServer->createService(SERVICE_UUID);
   _pCharacteristic = _pService->createCharacteristic(
@@ -113,16 +112,18 @@ void AMController::begin() {
   
   // Battery Level
   _pBLService = _pServer->createService(BLEUUID((uint16_t)0x180F));
-  
+    
   _pBLCharacteristic = _pBLService->createCharacteristic(
                        BLEUUID((uint16_t)0x2A19),
                        BLECharacteristic::PROPERTY_READ |
                        BLECharacteristic::PROPERTY_NOTIFY
                      );
   
+  _pBLService->addCharacteristic(_pBLCharacteristic);
+
+
   BLEDescriptor BatteryLevelDescriptor(BLEUUID((uint16_t)0x2901));
-  BatteryLevelDescriptor.setValue("Percentage 0 - 100");
-  
+  BatteryLevelDescriptor.setValue("Percentage 0 - 100");  
   _pBLCharacteristic->addDescriptor(&BatteryLevelDescriptor);
   
 	_pBLService->start();
@@ -333,7 +334,7 @@ Serial.print("AlarmR "); Serial.print(_value);
 #ifdef ALARMS_SUPPORT
           if (strcmp(_variable, "$Time$") == 0) {
             Serial.print("Setting time at value: "); Serial.println(atol(_value));
-            _startTime = atol(_value);
+            _startTime = atol(_value) - millis() / 1000;
 #ifdef DEBUG            
             Serial.print("Time Synchronized "); this->printTime(now()); Serial.println();
 #endif            
@@ -458,8 +459,23 @@ void AMController::updateBatteryLevel(uint8_t level) {
     return;
   }
   
+  #ifdef DEBUG    
+  	Serial.print("Updating battery level to "); Serial.println(level);
+	#endif
+  
 	_pBLCharacteristic->setValue(&level, 1);
 	_pBLCharacteristic->notify();
+
+	 delay(WRITE_DELAY);
+	 delay(WRITE_DELAY);
+}
+
+void AMController::setDeviceName(const char *deviceName) {
+
+#ifdef DEBUG    
+  Serial.print("Setting new name "); Serial.println(deviceName);
+#endif
+	this->begin(deviceName);
 }
 
 void AMController::log(const char *msg) {
@@ -474,7 +490,6 @@ void AMController::log(int msg) {
 
   this->writeTxtMessage("$D$", buffer);
 }
-
 
 void AMController::logLn(const char *msg) {
 

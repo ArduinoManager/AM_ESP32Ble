@@ -33,7 +33,6 @@
 #define SDLOGGEDATAGRAPH_SUPPORT    // uncomment to enable support for Logged Data Widget - LEFT THIS ALONE AT THE MOMENT
 //#define DEBUG           // uncomment to enable debugging - You should not need it !
 
-
 #define SERVICE_UUID        "378ab488-2479-11e9-ab14-d663bd873d93"
 #define CHARACTERISTIC_UUID "56da9eca-2479-11e9-ab14-d663bd873d93"
 
@@ -138,9 +137,6 @@ class AMController {
 
 #ifdef ALARMS_SUPPORT
 
- //    void syncTime();
-//     void readTime();
-
     void inizializeAlarms();
     void checkAndFireAlarms();
     void createUpdateAlarm(char *id, unsigned long time, bool repeat);
@@ -171,7 +167,7 @@ class AMController {
       void (*deviceDisconnected)(void));
 #endif
 
-    void begin();
+    void begin(const char *deviceName);
 
     void loop();
     void loop(unsigned long delay);
@@ -179,6 +175,8 @@ class AMController {
     void writeMessage(const char *variable, float value);
     void writeTripleMessage(const char *variable, float vX, float vY, float vZ);
     void writeTxtMessage(const char *variable, const char *value);
+    
+    void setDeviceName(const char *deviceName);
     
     void updateBatteryLevel(uint8_t level); // A value between 0% and 100%
 
@@ -189,7 +187,7 @@ class AMController {
     void logLn(int msg);
     void logLn(long msg);
     void logLn(unsigned long msg);
-
+    
     void temporaryDigitalWrite(uint8_t pin, uint8_t value, unsigned long ms);
 
 #ifdef ALARMS_SUPPORT

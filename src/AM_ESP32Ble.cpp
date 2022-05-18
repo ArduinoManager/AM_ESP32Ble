@@ -520,6 +520,14 @@ void AMController::logLn(unsigned long msg) {
   this->writeTxtMessage("$DLN$", buffer);
 }
 
+void AMController::logLn(float msg) {
+
+  char buffer[11];
+  ltoa(msg, buffer, 10);
+
+  this->writeTxtMessage("$DLN$", buffer);
+}
+
 void AMController::temporaryDigitalWrite(uint8_t pin, uint8_t value, unsigned long ms) {
 
   boolean previousValue = digitalRead(pin);

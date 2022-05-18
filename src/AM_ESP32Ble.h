@@ -187,6 +187,7 @@ class AMController {
     void logLn(int msg);
     void logLn(long msg);
     void logLn(unsigned long msg);
+    void logLn(float msg);
     
     void temporaryDigitalWrite(uint8_t pin, uint8_t value, unsigned long ms);
 

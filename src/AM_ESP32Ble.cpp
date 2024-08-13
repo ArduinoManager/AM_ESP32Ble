@@ -1114,7 +1114,7 @@ void AMController::notifyDisconnected() {
 }
 
 
-void AMController::dataAvailable(std::string data) {
+void AMController::dataAvailable(String data) {
   strcat(_remainBuffer, data.c_str());
   _dataAvailable = true;
 }

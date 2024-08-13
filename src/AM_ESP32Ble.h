@@ -15,7 +15,7 @@
 
    Author: Fabrizio Boco - fabboco@gmail.com
 
-   Version: 1.0.0
+   Version: 1.0.1
 
    All rights reserved
 
@@ -224,7 +224,7 @@ class AMController {
     void processIncomingData(void);
     void notifyConnected(void);
     void notifyDisconnected(void);
-    void dataAvailable(std::string);
+    void dataAvailable(String);
 
     /**
     	This class manages connection and disconnection
@@ -277,7 +277,7 @@ class AMController {
 
         void onWrite(BLECharacteristic *pCharacteristic) {
 
-          std::string rxValue = pCharacteristic->getValue();
+          String rxValue = pCharacteristic->getValue();
 
           /*
                 if (rxValue.length() > 0) {

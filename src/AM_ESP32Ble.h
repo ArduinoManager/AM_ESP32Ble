@@ -190,6 +190,7 @@ class AMController {
     void logLn(float msg);
     
     void temporaryDigitalWrite(uint8_t pin, uint8_t value, unsigned long ms);
+    float to_voltage(uint16_t adc_value, float vref, uint8_t resolution = 12);
 
 #ifdef ALARMS_SUPPORT
     unsigned long now();

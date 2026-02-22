@@ -19,6 +19,7 @@ writeTxtMessage	KEYWORD2
 log	KEYWORD2
 logLn	KEYWORD2
 temporaryDigitalWrite	KEYWORD2
+to_voltage	KEYWORD2
 sendFileList	KEYWORD2
 sendFile	KEYWORD2
 sdLogLabels	KEYWORD2

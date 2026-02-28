@@ -538,7 +538,7 @@ void AMController::temporaryDigitalWrite(uint8_t pin, uint8_t value, unsigned lo
 }
 
 
-float AMController::to_voltage(uint16_t adc_value, float vref, uint8_t resolution) {
+float AMController::to_voltage(float adc_value, float vref, uint8_t resolution) {
   const float conversion_factor = vref / (1 << resolution);
   return adc_value * conversion_factor;
 }

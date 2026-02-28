@@ -23,6 +23,8 @@
 #ifndef AM_CONTROLLERESP32BLE_H
 #define AM_CONTROLLERESP32BLE_H
 
+#pragma GCC diagnostic warning "-Wconversion"
+
 #include <Arduino.h>
 #include <BLEDevice.h>
 #include <BLEUtils.h>
@@ -190,7 +192,7 @@ class AMController {
     void logLn(float msg);
     
     void temporaryDigitalWrite(uint8_t pin, uint8_t value, unsigned long ms);
-    float to_voltage(uint16_t adc_value, float vref, uint8_t resolution = 12);
+    float to_voltage(float adc_value, float vref, uint8_t resolution = 12);
 
 #ifdef ALARMS_SUPPORT
     unsigned long now();

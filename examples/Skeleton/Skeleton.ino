@@ -47,7 +47,8 @@ AMController amController(&doWork, &doSync, &processIncomingMessages, &processOu
 void setup() {
 
   Serial.begin(115200);
-  Serial.println("AMControllerESP32BleExample");
+  delay(2000);
+  Serial.println("AMControllerESP32BleSkeleton");
   Serial.println("----------------------------");
 
   amController.begin("AMManager");
@@ -55,9 +56,6 @@ void setup() {
 
 #if (defined(SD_SUPPORT))
   Serial.println("Initializing SD card...");
-
-  delay(1000);
-
   // see if the card is present and can be initialized:
   if (!SD.begin(SD_SELECT)) {
     Serial.println("Card failed, or not present");
@@ -67,13 +65,11 @@ void setup() {
   }
 #endif
 
-
   /**
 
      Other initializations
 
   */
-
 
   Serial.println("**** Advertising ****");
   Serial.println("Ready");
@@ -136,7 +132,3 @@ void deviceDisconnected () {
 /**
   Additional functions
 **/
-float getVoltage(int pin) {
-
-  return (analogRead(pin) * 3.3 / 2048.0 * 1);   // converting from a 0 to 2048 digital range into voltage
-}

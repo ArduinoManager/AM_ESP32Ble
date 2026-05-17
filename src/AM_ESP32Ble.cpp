@@ -393,7 +393,7 @@ void AMController::writeMessage(const char *variable, float value) {
     return;
   }
   memset(&buffer, 0, 128);
-  snprintf(buffer, 128, "%s=%.3f#", variable, value);
+  snprintf(buffer, 128, "%s=%.5f#", variable, value);
   _pCharacteristic->setValue((uint8_t *)&buffer, strlen(buffer));
   _pCharacteristic->notify();
   delay(WRITE_DELAY);
@@ -539,7 +539,7 @@ void AMController::temporaryDigitalWrite(uint8_t pin, uint8_t value, unsigned lo
 
 
 float AMController::to_voltage(float adc_value, float vref, uint8_t resolution) {
-  const float conversion_factor = vref / (1 << resolution);
+  const float conversion_factor = vref / ((1 << resolution) - 1);
   return adc_value * conversion_factor;
 }
 

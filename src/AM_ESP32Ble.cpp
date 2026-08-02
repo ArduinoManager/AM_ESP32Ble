@@ -20,6 +20,7 @@
 */
 #include "AM_ESP32Ble.h"
 #include <BLE2902.h>
+#include "AM_Cache.h"
 
 #ifdef ALARMS_SUPPORT
 
@@ -62,6 +63,9 @@ AMController::AMController(
 
   _connected = false;
   _connectionChanged = false;
+
+  _lastKeepAliveTime = 0;
+  _pCache = new AM_Cache();
 }
 
 #if defined(ALARMS_SUPPORT)
@@ -168,6 +172,7 @@ void AMController::loop(unsigned long _delay) {
       if (_deviceDisconnected != NULL)
         _deviceDisconnected();
         
+      _pCache->clear();
       _pServer->startAdvertising();
     }
   }
@@ -197,8 +202,18 @@ void AMController::loop(unsigned long _delay) {
 
   _doWork();
 
-  if (_connected)
+  if (_connected) {
     _processOutgoingMessages();
+
+    // KA message
+    printf("Delta %.ld\n", (this->now() - _lastKeepAliveTime));
+
+    if (this->now() - _lastKeepAliveTime >= 15) {
+      _lastKeepAliveTime = this->now();
+      writeMessageImmediate("KA", 0);
+    }
+
+  }
 
   delay(_delay);
 }
@@ -375,11 +390,17 @@ Serial.print("AlarmR "); Serial.print(_value);
 }
 
 void AMController::writeMessage(const char *variable, int value) {
-char buffer[128];
+  char buffer[128];
 
   if (!_connected) {
     return;
   }
+
+  if (!_pCache->value_updated(variable, value)) {
+    return;
+  }
+  _lastKeepAliveTime = this->now();
+
   memset(&buffer, 0, 128);
   snprintf(buffer, 128, "%s=%d#", variable, value);
   writeBuffer((uint8_t *)&buffer, strlen(buffer));
@@ -392,12 +413,37 @@ void AMController::writeMessage(const char *variable, float value) {
   if (!_connected) {
     return;
   }
+
+  if (!_pCache->value_updated(variable, value)) {
+    return;
+  }
+  _lastKeepAliveTime = this->now();
+
   memset(&buffer, 0, 128);
   snprintf(buffer, 128, "%s=%.5f#", variable, value);
   _pCharacteristic->setValue((uint8_t *)&buffer, strlen(buffer));
   _pCharacteristic->notify();
   delay(WRITE_DELAY);
 }
+
+void AMController::writeMessage(const char *variable, const char *value) {
+ char buffer[128];
+
+  if (!_connected) {
+    return;
+  }
+
+  if (!_pCache->value_updated(variable, value)) {
+    return;
+  }
+  _lastKeepAliveTime = this->now();
+
+  memset(&buffer, 0, 128);
+  snprintf(buffer, 128, "%s=%s#", variable, value);
+  writeBuffer((uint8_t *)&buffer, strlen(buffer));
+  delay(WRITE_DELAY);
+}
+
 
 void AMController::writeTripleMessage(const char *variable, float vX, float vY, float vZ) {
 	char buffer[VARIABLELEN + VALUELEN + 3];
@@ -416,6 +462,12 @@ void AMController::writeTxtMessage(const char *variable, const char *value) {
   if (!_connected) {
     return;
   }
+
+  if (!_pCache->value_updated(variable, value)) {
+    return;
+  }
+  _lastKeepAliveTime = this->now();
+  
   memset(&buffer, 0, 128);
   snprintf(buffer, 128, "%s=%s#", variable, value);
   writeBuffer((uint8_t *)&buffer, strlen(buffer));
@@ -526,6 +578,18 @@ void AMController::logLn(float msg) {
   ltoa(msg, buffer, 10);
 
   this->writeTxtMessage("$DLN$", buffer);
+}
+
+void AMController::writeMessageImmediate(const char *variable, int value) {
+  char buffer[128];
+
+  if (!_connected) {
+    return;
+  }
+  memset(&buffer, 0, 128);
+  snprintf(buffer, 128, "%s=%d#", variable, value);
+  writeBuffer((uint8_t *)&buffer, strlen(buffer));
+  delay(WRITE_DELAY);
 }
 
 void AMController::temporaryDigitalWrite(uint8_t pin, uint8_t value, unsigned long ms) {
@@ -740,8 +804,6 @@ void AMController::checkAndFireAlarms() {
 
     if (!fileManager.read(_alarmFile, i, (uint8_t *)&a, sizeof(a)))
       return;
-
-
 
     if (a.time <= now) {
 

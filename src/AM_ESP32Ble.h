@@ -59,6 +59,8 @@
 #define VARIABLELEN       14
 #define VALUELEN          14
 
+class AM_Cache;
+
 class AMController {
 
   private:
@@ -77,6 +79,8 @@ class AMController {
     volatile    bool 			_connectionChanged;
     volatile    bool      _connected;
     bool									_sync;
+    unsigned long         _lastKeepAliveTime;                                   // Last time a message or keep-alive (KA) was sent
+    AM_Cache              *_pCache;
 
 #ifdef SD_SUPPORT
     File      						_root;
@@ -89,7 +93,8 @@ class AMController {
     unsigned long     		_lastAlarmCheck;
     char 									_alarmId[8];
     unsigned long    			_alarmTime;
-#endif
+#endif    
+    void writeMessageImmediate(const char *variable, int value);
 
     /**
       Pointer to the function where to put code in place of loop()
@@ -175,6 +180,7 @@ class AMController {
     void loop(unsigned long delay);
     void writeMessage(const char *variable, int value);
     void writeMessage(const char *variable, float value);
+    void writeMessage(const char *variable, const char *value);
     void writeTripleMessage(const char *variable, float vX, float vY, float vZ);
     void writeTxtMessage(const char *variable, const char *value);
     

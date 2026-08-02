@@ -5,6 +5,9 @@ This is an Arduino library to work with Arduino Manager app available for iOS an
  * Supported Boards: Any ESP32 board
  * Protocol: Bluetooth Low Energy
 
+
+__This version introduces a caching mechanism that sends only changed values to Arduino Manager, reducing the number of transmitted messages and Bluetooth traffic.__
+
 ## Arduino Manager
 
 Arduino Manager allows you to control and receive data from any Arduino or Arduino compatible microcontroller. It provides:
